@@ -45,27 +45,27 @@ FWD.orients <- allOrients(FWD)
 REV.orients <- allOrients(REV)
 
 # redefine filtNs based on what is actually in the dirs (sometimes an input sample is completely removed by filterAndTrim)
-fnFs.filtN <- sort(
-  file.path(filt_dir, basename(manifest$absolute_forward_path))[
-    file.exists(file.path(filt_dir, basename(manifest$absolute_forward_path)))
-  ]
-)
+#fnFs.filtN <- sort(
+  #file.path(filt_dir, basename(manifest$absolute_forward_path))[
+    #file.exists(file.path(filt_dir, basename(manifest$absolute_forward_path)))
+  #]
+#)
 
-fnRs.filtN <- sort(
-  file.path(filt_dir, basename(manifest$absolute_backward_path))[
-    file.exists(file.path(filt_dir, basename(manifest$absolute_backward_path)))
-  ]
-)
+#fnRs.filtN <- sort(
+  #file.path(filt_dir, basename(manifest$absolute_backward_path))[
+    #file.exists(file.path(filt_dir, basename(manifest$absolute_backward_path)))
+  #]
+#)
 
 # save updated filtN file lists
-saveRDS(fnFs.filtN, file = file.path(rds_dir, "02_fnFs.filtN.rds"))
-saveRDS(fnRs.filtN, file = file.path(rds_dir, "02_fnRs.filtN.rds"))
+#saveRDS(fnFs.filtN, file = file.path(rds_dir, "02_fnFs.filtN.rds"))
+#saveRDS(fnRs.filtN, file = file.path(rds_dir, "02_fnRs.filtN.rds"))
 
 # count primers pre trim
-pre_trim_primer_counts <- rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs.filtN[[1]]), 
-      FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = fnRs.filtN[[1]]), 
-      REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs.filtN[[1]]), 
-      REV.ReverseReads = sapply(REV.orients, primerHits, fn = fnRs.filtN[[1]]))
+pre_trim_primer_counts <- rbind(FWD.ForwardReads = sapply(FWD.orients, primerHits, fn = fnFs[[1]]), 
+      FWD.ReverseReads = sapply(FWD.orients, primerHits, fn = fnRs[[1]]), 
+      REV.ForwardReads = sapply(REV.orients, primerHits, fn = fnFs[[1]]), 
+      REV.ReverseReads = sapply(REV.orients, primerHits, fn = fnRs[[1]]))
 
 ## check
 print("Table for pre-trimmed primer counts:")
@@ -95,8 +95,8 @@ print(R1.flags)
 print(R2.flags)
 
 ## define cutadapt output files
-fnFs.cut <- file.path(cutadapt_dir, basename(fnFs.filtN))
-fnRs.cut <- file.path(cutadapt_dir, basename(fnRs.filtN))
+fnFs.cut <- file.path(cutadapt_dir, basename(fnFs))
+fnRs.cut <- file.path(cutadapt_dir, basename(fnRs))
 
 ## save objects
 saveRDS(fnFs.cut, file = file.path(rds_dir, "02_fnFs.cut.rds"))
@@ -105,7 +105,7 @@ saveRDS(fnRs.cut, file = file.path(rds_dir, "02_fnRs.cut.rds"))
 ## check file matching
 files_match <- identical(
   basename(fnFs.cut),
-  basename(fnFs.filtN)
+  basename(fnFs)
 )
 
 if (!files_match) {
@@ -120,7 +120,7 @@ if (!files_match) {
 all_args <- c("-m", minimum, "-n", copies)
 
 # run cutadapt loop
-for (i in seq_along(fnFs.filtN)) {
+for (i in seq_along(fnFs)) {
   system2(
     cutadapt_loc, # this is the executable file location for cutadapt
     args = c(
@@ -128,8 +128,8 @@ for (i in seq_along(fnFs.filtN)) {
       R2.flags,
       "-o", fnFs.cut[i],
       "-p", fnRs.cut[i],
-      fnFs.filtN[i],
-      fnRs.filtN[i],
+      fnFs[i],
+      fnRs[i],
       "-j", "0",
       "--discard-untrimmed",
       all_args
