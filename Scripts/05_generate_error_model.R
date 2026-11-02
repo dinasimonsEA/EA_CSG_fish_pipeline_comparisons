@@ -38,3 +38,8 @@ pdf(
   width = 10,
   height = 10
 )
+
+print(plotErrors(errF, nominalQ = TRUE))
+print(plotErrors(errR, nominalQ = TRUE))
+
+dev.off() # closes pdf
