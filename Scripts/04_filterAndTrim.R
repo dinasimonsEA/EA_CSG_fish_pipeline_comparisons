@@ -47,6 +47,44 @@ write.table(fnRs.filtN,
 
 saveRDS(out, file = file.path(rds_dir, "04_out.rds"))
 
+#added to save input and filtered reads
+write.table(
+  out,
+  file = file.path(results_dir, "04_filtered_reads.tsv"),
+  sep = "\t",
+  quote = FALSE
+)
+
+#test both samples and...
+valid_idx <- logical(length(fnFs.filtN))
+for (i in seq_along(fnFs.filtN)) {
+  cat("Checking:", basename(fnFs.filtN[i]), "\n")
+  valid_idx[i] <- tryCatch({
+    # Test both files
+    plotQualityProfile(fnFs.filtN[i])
+    plotQualityProfile(fnRs.filtN[i])
+    TRUE
+  }, error = function(e) {
+    cat(
+      "Removing sample:",
+      basename(fnFs.filtN[i]),
+      "\nReason:",
+      e$message,
+      "\n\n"
+    )
+    FALSE
+  })
+}
+
+# ... keep only valid samples
+fnFs.filtN_plot <- fnFs.filtN[valid_idx]
+fnRs.filtN_plot <- fnRs.filtN[valid_idx]
+cat(
+  "Retained", length(fnFs.filtN_plot),
+  "of", length(valid_idx),
+  "samples\n"
+)
+
 # generate quality plots on the quality-trimmed data
 pdf(
   file = file.path(results_dir, "04_post_trim_quality_plots.pdf"),
@@ -54,14 +92,9 @@ pdf(
   height = 10
 )
 
-# create new manifest for filtered samples
-filtered_data_loc <- filt_dir
-manifest_filtered <- make_manifest(filtered_data_loc)
+for (i in seq_along(fnFs.filtN_plot)) {
+print(plotQualityProfile(fnFs.filtN_plot[i]))
+print(plotQualityProfile(fnRs.filtN_plot[i]))
+}
 
-write.csv(
-  manifest_filtered,
-  file = file.path(filt_dir, "04_manifest_filtered.csv"),
-  row.names = FALSE
-)
-
-head(manifest_filtered)
+dev.off() # closes pdf
