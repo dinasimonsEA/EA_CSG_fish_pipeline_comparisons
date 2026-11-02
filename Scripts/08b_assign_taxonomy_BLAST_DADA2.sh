@@ -12,11 +12,11 @@ test_data_name="$1"
 base="/Workspace/Users/dina.simons@environment-agency.gov.uk/Fish_pipeline_comparisons/Data"
 
 processed_dir="${base}/Processed/${test_data_name}"
-db_src="${base}/Databases/EA_custom/EA_fish_riaz_db"
+db_src="${base}/Databases/EA_custom_Riaz/EA_fish_riaz_db_FINAL"
 
 # BLAST temp directory (local disk)
 db_tmp="/tmp/blastdb"
-db_name="EA_fish_riaz_db"
+db_name="EA_fish_riaz_db_FINAL"
 
 # input/output files
 query="${processed_dir}/06_ASV_seqs_DADA2.fasta"

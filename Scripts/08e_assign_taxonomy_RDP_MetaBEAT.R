@@ -23,9 +23,6 @@ seqs_metabeat <- sapply(seqtab.metabeat, function(x) {
 })
 seqs_metabeat <- toupper(seqs_metabeat)
 
-# database path
-database <- file.path(path, "Data", "Databases", "EA_custom", "EA_fish_database.riaz.AssignTaxonomy.fasta")
-
 # assign taxonomy (metabeat)
 taxa_mb <- assignTaxonomy(
   seqs_metabeat,
@@ -43,7 +40,7 @@ taxa_metabeat_print <- taxa_metabeat
 rownames(taxa_metabeat_print) <- NULL
 
 # database name (used in filenames)
-db_name <- "EA_fish_riaz"
+db_name <- "EA_fish_riaz" # kept the same when changed database so that it would override. Change if you want to keep it seperate to other database runs
 
 # write taxonomy table
 write.table(

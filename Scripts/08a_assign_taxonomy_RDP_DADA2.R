@@ -16,9 +16,6 @@ dir.create(processed_dir, recursive = TRUE, showWarnings = FALSE)
 # read in the R object
 seqtab.nochim <- readRDS(file = file.path(rds_dir, "06_seqtab.nochim.rds"))
 
-# database path
-database <- file.path(path, "Data", "Databases", "EA_custom", "EA_fish_database.riaz.AssignTaxonomy.fasta")
-
 # jono to fix nBoot, should be 1000
 # assign taxonomy (dada2)
 taxa <- assignTaxonomy(
@@ -37,7 +34,7 @@ taxa_dada2_print <- taxa_dada2
 rownames(taxa_dada2_print) <- NULL
 
 # database name (used in filenames)
-db_name <- "EA_fish_riaz"
+db_name <- "EA_fish_riaz" # kept the same when changed database so that it would override. Change if you want to keep it seperate to other database runs
 
 # write taxonomy table
 write.table(
