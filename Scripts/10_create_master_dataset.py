@@ -8,7 +8,7 @@ import numpy as np
 # set variables -----------------------------------------------------
 #===================================================================
 
-datasets = ["Windermere_2017", "Marchamley", "RingTrial_Sean", "Simulated"] # folder names
+datasets = ["Windermere_2017", "Marchamley", "RingTrial_Sean", "Simulated"] # folder names for datasets (simulated GT treated different)
 base_path = ["Data/Processed"]
 denoise_method = ["DADA2", "VSEARCH", "MetaBEAT"] # denoising methods
 taxonomy_method = ["RDP", "MAPseq", "BLAST", "MetaBEAT", "VSEARCH"] # taxonomy assignment methods 
@@ -259,7 +259,7 @@ for ds in datasets:
                 os.path.join(folder_path, vsearch_file[0]),
                 sep="\t",
                 header=None,
-                names=["asv", "taxonomy_raw"]
+                names=["asv", "taxonomy_raw", "value_1", "value_2"]
             )
 
             print("Rows:", len(df_vsearch))
