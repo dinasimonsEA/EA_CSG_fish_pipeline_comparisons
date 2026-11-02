@@ -8,13 +8,13 @@ processed_dir <- file.path(path, "Data", "Processed", test_data_name)
 # 2. Make taxonomy & accession look-up table from metabeat ---------
 ## read MetaFishLib database
 mfl_db <- read.csv(
-  file = file.path(path, "Data", "Databases", "EA_custom", "EA_fish_database.riaz.csv"),
+  file = file.path(path, "Data", "Databases", "EA_custom_Riaz", "final_database_001.csv"),
   stringsAsFactors = FALSE
 )
 
 ## make taxonomy lookup table
 taxonomy_lookup <- mfl_db %>%
-  select(gbAccession, genus, family, order, class, phylum, kingdom)
+  select("Trimmed_sequence", "Species", "Genus", "Family", "Order", "Class", "Phylum", "Kingdom", "seq_id")
 
 # 3. Load blast data and tidy ---------
 
@@ -29,20 +29,20 @@ BLAST_VSEARCH_output <- read.table(
 # clean species column
 BLAST_VSEARCH_output <- BLAST_VSEARCH_output %>%
   mutate(
-    V3 = sub("^[^ ]+ ", "", V3),  # remove accession prefix
-    V3 = gsub("_", " ", V3)       # optional: make names readable
+    V3 = sub("^.*;", "", V3),  # keep only text after last ;
+    V3 = gsub("_", " ", V3)
   )
 
 # set column names (BLAST outfmt 6)
 colnames(BLAST_VSEARCH_output) <- c(
-  "qseqid", "sseqid", "species", "pident", "length",
+  "qseqid", "sseqid", "species_blast", "pident", "length",
   "mismatch", "gapopen", "qstart", "qend",
   "sstart", "send", "evalue", "bitscore"
 )
 
 # join taxonomy lookup
 BLAST_VSEARCH_output <- BLAST_VSEARCH_output %>%
-  left_join(taxonomy_lookup, by = c("sseqid" = "gbAccession"))
+  left_join(taxonomy_lookup, by = c("sseqid" = "seq_id"))
 
 # 4. Filter ---------
 
@@ -56,7 +56,7 @@ BLAST_VSEARCH_output <- BLAST_VSEARCH_output %>%
 
 # 5. Get taxonomy matrix
 VSEARCH_taxa <- BLAST_VSEARCH_output %>%
-select(c(kingdom, phylum, class, order, family, genus, species))
+select(c(Kingdom, Phylum, Class, Order, Family, Genus, Species))
 colnames(VSEARCH_taxa) <- 
  c(
   "Kingdom",
