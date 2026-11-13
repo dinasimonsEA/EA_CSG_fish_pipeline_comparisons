@@ -30,7 +30,3 @@ The repository automatically produces:
 - phyloseq objects
 - Comparative analyses and visualisations (for internal EA report)
 - Concordance assessments against historical fish records
-
-##Contact
-
-This work was completed by Dina Simons (dina.simons@environment-agency.gov.uk).
